@@ -1,0 +1,116 @@
+menu "WIFI STA Configuration"
+
+    config WIFI_STA_CONNECT
+        bool "Enable WIFI STA Connection"
+        default n
+        help
+            Enable this option to allow the device to connect to a WiFi network as a station (STA) mode.
+            This is useful for devices that need to connect to an existing WiFi network for internet access or local communication.
+
+            If you enable this option, make sure to configure the necessary WiFi credentials (SSID and password) in your application code.
+
+    if WIFI_STA_CONNECT
+        choice WIFI_STA_IP_TYPE
+            prompt "IP version"
+            default WIFI_STA_CONNECT_IPV4
+            help 
+                choose the IP type to use for the connection ( IPV4, IPV6, or Unspecified).
+
+            config  WIFI_STA_CONNECT_IPV4
+                bool "IPv4"
+                select LWIP_IPV4
+                help 
+                    Use only IPv4 for the Wifi connection.
+            config WIFI_STA_CONNECT_IP6
+                bool "IPv6"
+                select LWIP_IPV6
+                help
+                    Use only IPv6 for the Wifi connection
+            config WIFI_STA_CONNECT_UNSPECIFIED
+                bool "Either IPv4 and IPv6"
+                select LWIP_IPV4
+                select LWIP_IPV6
+                help 
+                    Use either IPv4 or IPv6 for WiFi connection
+        endchoice
+
+        choice WIFI_STA_AUTH_MODE
+            prompt "Minimum WiFi Authentication Mode"
+            default WIFI_STA_AUTH_WPA3_PSK
+            help
+                Choose the minimum WiFi authentication mode to use for the connection.
+            config WIFI_STA_AUTH_OPEN
+                bool "Open"
+                help
+                    Allow connection to open networks (no authentication).
+            config WIFI_STA_AUTH_WEP
+                bool "WEP"
+                help
+                    Allow connection to WEP secured networks.
+            config WIFI_STA_AUTH_WPA_PSK
+                bool "WPA-PSK"
+                help
+                    Allow connection to WPA-PSK secured networks.
+            config WIFI_STA_AUTH_WPA2_PSK
+                bool "WPA2-PSK"
+                help
+                    Allow connection to WPA2-PSK secured networks.
+            config WIFI_STA_AUTH_WPA3_PSK
+                bool "WPA3-PSK"
+                help
+                    Allow connection to WPA3-PSK secured networks
+            config WIFI_STA_AUTH_WPA_WPA2_PSK
+                bool "WPA/WPA2-PSK"
+                help
+                    Allow connection to WPA/WPA2-PSK secured networks.
+            config WIFI_STA_AUTH_WPA2_WPA3_PSK
+                bool "WPA2/WPA3-PSK"
+                help
+                    Allow connection to WPA2/WPA3-PSK secured networks.
+            config WIFI_STA_AUTH_WAPI_PSK
+                bool "WAPI-PSK"
+                help
+                    Allow connection to WAPI-PSK secured networks.
+        endchoice
+
+        config WIFI_STA_SSID
+            string "SSID"
+            default "your_ssid"
+            help
+                Set the SSID of the WiFi network to connect to.
+        config WIFI_STA_PASSWORD
+            string "Password"
+            default "your_password"
+            help
+                Set the password of the WiFi network to connect to.
+                
+        choice WIFI_STA_WPA3_SAE_MODE
+            prompt "WPA3 SAE Mode"
+            default WIFI_STA_WPA3_SAE_PWE_BOTH
+            help
+                Choose the WPA3 SAE mode to use for the connection.
+            config WIFI_STA_WPA3_SAE_PWE_HUNT_AND_PECK
+                bool "Hunt and Peck"
+                help
+                    Use WPA3 SAE only for the connection.
+            config WIFI_STA_WPA3_SAE_H2E
+                bool "Hash to Element(H2E)"
+                help
+                    Use WPA3 SAE transition mode for the connection.
+        endchoice
+
+        config WIFI_STA_WPA3_PASSWORD_IDENTIFIER
+            string "WPA3 Password Identifier"
+            depends on WIFI_STA_WPA3_SAE_PWE_H2E || WIFI_STA_WPA3_SAE_PWE_BOTH
+            default ""
+            help
+                Set the WPA3 password identifier for the connection.
+                
+        config WIFI_STA_AUTO_RECONNECT
+            bool "Enable Auto Reconnect"
+            default y
+            help
+                Enable this option to allow the device to automatically reconnect to the WiFi network if the connection is lost.
+    endif #WIFI_STA_CONNECT
+endmenu       
+                    
