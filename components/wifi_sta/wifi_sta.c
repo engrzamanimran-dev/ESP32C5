@@ -13,12 +13,15 @@ static esp_netif_t *s_wifi_netif = NULL;
 static EventGroupHandle_t s_wifi_event_group = NULL;
 static wifi_netif_driver_t s_wifi_driver = NULL;
 
+static void wifi_start(void *esp_netif, esp_event_base_t event_base,
+                       int32_t event_id, void *event_data);
+
 static void on_wifi_event(void *arg,esp_event_base_t event_base, int32_t event_id, void* event_data){
     switch (event_id)
     {
     case WIFI_EVENT_STA_START:
         if(s_wifi_netif != NULL) {
-            esp_wifi_connect();
+            wifi_start(s_wifi_netif, event_base, event_id, event_data);
         }
         break;
     case WIFI_EVENT_STA_STOP:
